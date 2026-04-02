@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bin Umer Land / Plot Profit Calculator</title>
+<style>
+  :root{
+    --bg1:#081224;
+    --bg2:#12233f;
+    --card:rgba(20,34,59,.88);
+    --card2:#091733;
+    --text:#eef4ff;
+    --muted:#a8b6cf;
+    --primary:#38bdf8;
+    --primary2:#2563eb;
+    --green:#22c55e;
+    --red:#ef4444;
+    --amber:#f59e0b;
+    --border:rgba(148,163,184,.18);
+    --shadow:0 18px 40px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at top left, rgba(56,189,248,.12), transparent 26%),
+      radial-gradient(circle at top right, rgba(37,99,235,.16), transparent 24%),
+      linear-gradient(135deg, var(--bg1), var(--bg2));
+    min-height:100vh;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:24px 18px 40px;}
+  .title{
+    text-align:center; font-size:34px; font-weight:800; margin:6px 0 22px;
+    letter-spacing:.2px;
+  }
+  .title span{
+    background:linear-gradient(90deg,#7dd3fc,#60a5fa,#34d399);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:18px;
+    box-shadow:var(--shadow);
+    backdrop-filter: blur(8px);
+    margin-bottom:18px;
+  }
+  .section-title{
+    font-size:22px; font-weight:800; margin:2px 0 16px;
+    color:#dbeafe;
+  }
+  .subtle{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:-6px;
+    margin-bottom:14px;
+  }
+  .grid-3,.grid-2,.results{
+    display:grid; gap:14px;
+  }
+  .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .field{
+    background:rgba(8,20,44,.55);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:12px;
+  }
+  .field label{
+    display:block; font-size:13px; color:var(--muted); margin-bottom:8px; font-weight:700;
+  }
+  .field input,.field select{
+    width:100%; border:none; outline:none; border-radius:14px;
+    background:#071329; color:var(--text); padding:13px 14px; font-size:17px;
+  }
+  .buttons{display:flex; gap:12px; margin-top:16px; flex-wrap:wrap}
+  button{
+    border:none; border-radius:14px; padding:13px 18px; font-size:16px; font-weight:800; cursor:pointer;
+  }
+  .btn-primary{background:linear-gradient(90deg,var(--primary),var(--primary2)); color:white;}
+  .btn-secondary{background:#334155; color:white;}
+  .results{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .result{
+    background:var(--card2);
+    border:1px solid var(--border);
+    border-radius:18px; padding:14px 16px;
+    min-height:92px;
+  }
+  .result .k{font-size:13px; color:var(--muted); margin-bottom:8px; font-weight:700;}
+  .result .v{font-size:19px; line-height:1.35; font-weight:800; word-break:break-word;}
+  .profit{color:var(--green)}
+  .loss{color:var(--red)}
+  .warn{color:var(--amber)}
+  .wide{grid-column:1 / -1}
+  .footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:10px;
+  }
+  @media (max-width:760px){
+    .grid-3,.grid-2,.results{grid-template-columns:1fr}
+    .title{font-size:28px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title"><span>Bin Umer Land / Plot Profit Calculator</span></div>
+
+    <div class="card">
+      <div class="section-title">Inputs</div>
+      <div class="subtle">Area daalein, buying/selling mode choose karein, phir app sab calculate karegi.</div>
+
+      <div class="grid-3">
+        <div class="field">
+          <label>Acre</label>
+          <input id="acre" type="number" step="any" value="1">
+        </div>
+        <div class="field">
+          <label>Kanal</label>
+          <input id="kanal" type="number" step="any" value="0">
+        </div>
+        <div class="field">
+          <label>Marla</label>
+          <input id="marla" type="number" step="any" value="0">
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:14px;">
+        <div class="field">
+          <label>Purchase Mode</label>
+          <select id="purchaseMode">
+            <option value="marla">Per Marla</option>
+            <option value="acre">Per Acre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Purchase Rate</label>
+          <input id="purchaseRate" type="number" step="any" value="500000">
+        </div>
+
+        <div class="field">
+          <label>Selling Mode</label>
+          <select id="sellingMode">
+            <option value="marla">Per Marla</option>
+            <option value="acre">Per Acre</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Selling Rate</label>
+          <input id="sellingRate" type="number" step="any" value="600000">
+        </div>
+
+        <div class="field">
+          <label>Saleable Land %</label>
+          <input id="saleablePercent" type="number" step="any" value="70">
+        </div>
+        <div class="field">
+          <label>Development Cost</label>
+          <input id="developmentCost" type="number" step="any" value="3500000">
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:18px;">Installment Plan Inputs</div>
+      <div class="grid-3">
+        <div class="field">
+          <label>Booking %</label>
+          <input id="bookingPercent" type="number" step="any" value="20">
+        </div>
+        <div class="field">
+          <label>Installment Months</label>
+          <input id="installmentMonths" type="number" step="1" value="36">
+        </div>
+        <div class="field">
+          <label>Extra Charges (optional)</label>
+          <input id="extraCharges" type="number" step="any" value="0">
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-primary" onclick="calculate()">Calculate</button>
+        <button class="btn-secondary" onclick="resetForm()">Reset</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Core Results</div>
+      <div class="results">
+        <div class="result"><div class="k">Total Marla</div><div class="v" id="totalMarla">0</div></div>
+        <div class="result"><div class="k">Purchase Rate per Marla</div><div class="v" id="purchaseRatePerMarla">0</div></div>
+
+        <div class="result"><div class="k">Land Cost</div><div class="v" id="landCost">0</div></div>
+        <div class="result"><div class="k">Saleable Marla</div><div class="v" id="saleableMarla">0</div></div>
+
+        <div class="result"><div class="k">Wasted Land (Marla)</div><div class="v" id="wastedLand">0</div></div>
+        <div class="result"><div class="k">Selling Rate per Marla</div><div class="v" id="sellingRatePerMarla">0</div></div>
+
+        <div class="result"><div class="k">Revenue</div><div class="v" id="revenue">0</div></div>
+        <div class="result"><div class="k">Total Project Cost</div><div class="v" id="totalProjectCost">0</div></div>
+
+        <div class="result"><div class="k">Net Profit</div><div class="v" id="netProfit">0</div></div>
+        <div class="result"><div class="k">Profit %</div><div class="v" id="profitPercent">0%</div></div>
+
+        <div class="result"><div class="k">ROI %</div><div class="v" id="roiPercent">0%</div></div>
+        <div class="result"><div class="k">Development Cost per Marla</div><div class="v" id="devPerMarla">0</div></div>
+
+        <div class="result"><div class="k">Actual Cost per Saleable Marla</div><div class="v" id="actualCostPerSaleableMarla">0</div></div>
+        <div class="result"><div class="k">Break-even per Marla</div><div class="v" id="breakEvenPerMarla">0</div></div>
+
+        <div class="result"><div class="k">Break-even per Acre</div><div class="v" id="breakEvenPerAcre">0</div></div>
+        <div class="result"><div class="k">Status / Warning</div><div class="v" id="status">-</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Plot Analysis</div>
+      <div class="results">
+        <div class="result"><div class="k">5 Marla Plots</div><div class="v" id="plots5">0</div></div>
+        <div class="result"><div class="k">10 Marla Plots</div><div class="v" id="plots10">0</div></div>
+
+        <div class="result"><div class="k">5 Marla Plot Price</div><div class="v" id="plotPrice5">0</div></div>
+        <div class="result"><div class="k">10 Marla Plot Price</div><div class="v" id="plotPrice10">0</div></div>
+
+        <div class="result"><div class="k">5 Marla Safe Price</div><div class="v" id="safePlot5">0</div></div>
+        <div class="result"><div class="k">10 Marla Safe Price</div><div class="v" id="safePlot10">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Suggested Selling Rates</div>
+      <div class="results">
+        <div class="result"><div class="k">Break-even</div><div class="v" id="sugBreak">0</div></div>
+        <div class="result"><div class="k">Safe 10%</div><div class="v" id="sugSafe">0</div></div>
+
+        <div class="result"><div class="k">Good 20%</div><div class="v" id="sugGood">0</div></div>
+        <div class="result"><div class="k">Premium 30%</div><div class="v" id="sugPremium">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Installment Plan</div>
+      <div class="results">
+        <div class="result"><div class="k">5 Marla Booking</div><div class="v" id="booking5">0</div></div>
+        <div class="result"><div class="k">10 Marla Booking</div><div class="v" id="booking10">0</div></div>
+
+        <div class="result"><div class="k">5 Marla Remaining</div><div class="v" id="remaining5">0</div></div>
+        <div class="result"><div class="k">10 Marla Remaining</div><div class="v" id="remaining10">0</div></div>
+
+        <div class="result"><div class="k">5 Marla Monthly Installment</div><div class="v" id="monthly5">0</div></div>
+        <div class="result"><div class="k">10 Marla Monthly Installment</div><div class="v" id="monthly10">0</div></div>
+
+        <div class="result"><div class="k">5 Marla Total Price + Charges</div><div class="v" id="totalWithCharges5">0</div></div>
+        <div class="result"><div class="k">10 Marla Total Price + Charges</div><div class="v" id="totalWithCharges10">0</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Scenario Compare</div>
+      <div class="results">
+        <div class="result"><div class="k">At Current Sell Rate</div><div class="v" id="scCurrent">0</div></div>
+        <div class="result"><div class="k">At Safe 10%</div><div class="v" id="scSafe">0</div></div>
+
+        <div class="result"><div class="k">At Good 20%</div><div class="v" id="scGood">0</div></div>
+        <div class="result"><div class="k">At Premium 30%</div><div class="v" id="scPremium">0</div></div>
+      </div>
+    </div>
+
+    <div class="footer">Bin Umer Calculator App</div>
+  </div>
+
+<script>
+function n(id){
+  const v = parseFloat((document.getElementById(id).value || "").toString().replace(/,/g,""));
+  return isNaN(v) ? 0 : v;
+}
+function fmt(x, digits=0){
+  return Number(x || 0).toLocaleString(undefined,{
+    minimumFractionDigits:digits,
+    maximumFractionDigits:digits
+  });
+}
+function fmtBoth(x, digits=0){
+  const num = Number(x || 0);
+  const sign = num < 0 ? "-" : "";
+  const abs = Math.abs(num);
+  let million = (abs / 1000000).toFixed(2);
+  million = million.replace(/\.00$/,"").replace(/(\.\d)0$/,"$1");
+  return sign + fmt(abs, digits) + " (" + sign + million + " million)";
+}
+function fmtPercent(x){
+  return fmt(x,2) + "%";
+}
+function scenarioProfit(ratePerMarla, saleableMarla, totalProjectCost){
+  return (saleableMarla * ratePerMarla) - totalProjectCost;
+}
+function setStatus(text, cls){
+  const el = document.getElementById("status");
+  el.textContent = text;
+  el.className = "v " + cls;
+}
+function calculate(){
+  const acre = n("acre");
+  const kanal = n("kanal");
+  const marla = n("marla");
+  const totalMarla = (acre * 160) + (kanal * 20) + marla;
+
+  const purchaseMode = document.getElementById("purchaseMode").value;
+  const purchaseRate = n("purchaseRate");
+  const purchaseRatePerMarla = purchaseMode === "acre" ? purchaseRate / 160 : purchaseRate;
+
+  const sellingMode = document.getElementById("sellingMode").value;
+  const sellingRate = n("sellingRate");
+  const sellingRatePerMarla = sellingMode === "acre" ? sellingRate / 160 : sellingRate;
+
+  const saleablePercent = n("saleablePercent");
+  const developmentCost = n("developmentCost");
+  const bookingPercent = n("bookingPercent");
+  const installmentMonths = n("installmentMonths");
+  const extraCharges = n("extraCharges");
+
+  const saleableMarla = totalMarla * (saleablePercent / 100);
+  const wastedLand = totalMarla - saleableMarla;
+  const wastedCost = wastedLand * purchaseRatePerMarla;
+  const landCost = totalMarla * purchaseRatePerMarla;
+  const revenue = saleableMarla * sellingRatePerMarla;
+  const totalProjectCost = landCost + developmentCost;
+  const netProfit = revenue - totalProjectCost;
+  const profitPercent = totalProjectCost > 0 ? (netProfit / totalProjectCost) * 100 : 0;
+  const roiPercent = totalProjectCost > 0 ? (netProfit / totalProjectCost) * 100 : 0;
+  const devPerMarla = totalMarla > 0 ? developmentCost / totalMarla : 0;
+  const actualCostPerSaleableMarla = saleableMarla > 0 ? totalProjectCost / saleableMarla : 0;
+  const breakEvenPerMarla = actualCostPerSaleableMarla;
+  const breakEvenPerAcre = breakEvenPerMarla * 160;
+  const plots5 = Math.floor(saleableMarla / 5);
+  const plots10 = Math.floor(saleableMarla / 10);
+
+  const sugBreak = breakEvenPerMarla;
+  const sugSafe = breakEvenPerMarla * 1.10;
+  const sugGood = breakEvenPerMarla * 1.20;
+  const sugPremium = breakEvenPerMarla * 1.30;
+
+  const plotPrice5 = sellingRatePerMarla * 5;
+  const plotPrice10 = sellingRatePerMarla * 10;
+  const safePlot5 = sugSafe * 5;
+  const safePlot10 = sugSafe * 10;
+
+  const totalWithCharges5 = plotPrice5 + extraCharges;
+  const totalWithCharges10 = plotPrice10 + extraCharges;
+  const booking5 = totalWithCharges5 * (bookingPercent / 100);
+  const booking10 = totalWithCharges10 * (bookingPercent / 100);
+  const remaining5 = totalWithCharges5 - booking5;
+  const remaining10 = totalWithCharges10 - booking10;
+  const monthly5 = installmentMonths > 0 ? remaining5 / installmentMonths : 0;
+  const monthly10 = installmentMonths > 0 ? remaining10 / installmentMonths : 0;
+
+  const scCurrent = scenarioProfit(sellingRatePerMarla, saleableMarla, totalProjectCost);
+  const scSafe = scenarioProfit(sugSafe, saleableMarla, totalProjectCost);
+  const scGood = scenarioProfit(sugGood, saleableMarla, totalProjectCost);
+  const scPremium = scenarioProfit(sugPremium, saleableMarla, totalProjectCost);
+
+  document.getElementById("totalMarla").textContent = fmt(totalMarla,2);
+  document.getElementById("purchaseRatePerMarla").textContent = fmtBoth(purchaseRatePerMarla,0);
+  document.getElementById("landCost").textContent = fmtBoth(landCost,0);
+  document.getElementById("saleableMarla").textContent = fmt(saleableMarla,2);
+  document.getElementById("wastedLand").textContent = fmt(wastedLand,2) + " (" + fmtBoth(wastedCost,0).split(" (")[1].replace(")","") + ")";
+  document.getElementById("sellingRatePerMarla").textContent = fmtBoth(sellingRatePerMarla,0);
+  document.getElementById("revenue").textContent = fmtBoth(revenue,0);
+  document.getElementById("totalProjectCost").textContent = fmtBoth(totalProjectCost,0);
+
+  const np = document.getElementById("netProfit");
+  np.textContent = fmtBoth(netProfit,0);
+  np.className = "v " + (netProfit >= 0 ? "profit" : "loss");
+
+  document.getElementById("profitPercent").textContent = fmtPercent(profitPercent);
+  document.getElementById("roiPercent").textContent = fmtPercent(roiPercent);
+  document.getElementById("devPerMarla").textContent = fmtBoth(devPerMarla,0);
+  document.getElementById("actualCostPerSaleableMarla").textContent = fmtBoth(actualCostPerSaleableMarla,0);
+  document.getElementById("breakEvenPerMarla").textContent = fmtBoth(breakEvenPerMarla,0);
+  document.getElementById("breakEvenPerAcre").textContent = fmtBoth(breakEvenPerAcre,0);
+
+  document.getElementById("plots5").textContent = fmt(plots5,0);
+  document.getElementById("plots10").textContent = fmt(plots10,0);
+  document.getElementById("plotPrice5").textContent = fmtBoth(plotPrice5,0);
+  document.getElementById("plotPrice10").textContent = fmtBoth(plotPrice10,0);
+  document.getElementById("safePlot5").textContent = fmtBoth(safePlot5,0);
+  document.getElementById("safePlot10").textContent = fmtBoth(safePlot10,0);
+
+  document.getElementById("sugBreak").textContent = fmtBoth(sugBreak,0);
+  document.getElementById("sugSafe").textContent = fmtBoth(sugSafe,0);
+  document.getElementById("sugGood").textContent = fmtBoth(sugGood,0);
+  document.getElementById("sugPremium").textContent = fmtBoth(sugPremium,0);
+
+  document.getElementById("booking5").textContent = fmtBoth(booking5,0);
+  document.getElementById("booking10").textContent = fmtBoth(booking10,0);
+  document.getElementById("remaining5").textContent = fmtBoth(remaining5,0);
+  document.getElementById("remaining10").textContent = fmtBoth(remaining10,0);
+  document.getElementById("monthly5").textContent = fmtBoth(monthly5,0);
+  document.getElementById("monthly10").textContent = fmtBoth(monthly10,0);
+  document.getElementById("totalWithCharges5").textContent = fmtBoth(totalWithCharges5,0);
+  document.getElementById("totalWithCharges10").textContent = fmtBoth(totalWithCharges10,0);
+
+  const scCurEl = document.getElementById("scCurrent");
+  const scSafeEl = document.getElementById("scSafe");
+  const scGoodEl = document.getElementById("scGood");
+  const scPremiumEl = document.getElementById("scPremium");
+
+  scCurEl.textContent = fmtBoth(scCurrent,0);
+  scSafeEl.textContent = fmtBoth(scSafe,0);
+  scGoodEl.textContent = fmtBoth(scGood,0);
+  scPremiumEl.textContent = fmtBoth(scPremium,0);
+
+  scCurEl.className = "v " + (scCurrent >= 0 ? "profit" : "loss");
+  scSafeEl.className = "v " + (scSafe >= 0 ? "profit" : "loss");
+  scGoodEl.className = "v " + (scGood >= 0 ? "profit" : "loss");
+  scPremiumEl.className = "v " + (scPremium >= 0 ? "profit" : "loss");
+
+  if (netProfit < 0) {
+    setStatus("LOSS - Increase selling rate", "loss");
+  } else if (profitPercent < 10) {
+    setStatus("LOW PROFIT - Risky deal", "warn");
+  } else {
+    setStatus("GOOD PROFIT - Safe deal", "profit");
+  }
+}
+function resetForm(){
+  document.getElementById("acre").value = 1;
+  document.getElementById("kanal").value = 0;
+  document.getElementById("marla").value = 0;
+  document.getElementById("purchaseMode").value = "marla";
+  document.getElementById("purchaseRate").value = 500000;
+  document.getElementById("sellingMode").value = "marla";
+  document.getElementById("sellingRate").value = 600000;
+  document.getElementById("saleablePercent").value = 70;
+  document.getElementById("developmentCost").value = 3500000;
+  document.getElementById("bookingPercent").value = 20;
+  document.getElementById("installmentMonths").value = 36;
+  document.getElementById("extraCharges").value = 0;
+  calculate();
+}
+calculate();
+</script>
+</body>
+</html>
